@@ -5,12 +5,12 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full md:hidden">
       <div className="glass-nav glass-highlight border-0 border-b border-[var(--glass-border)]">
-        <div className="container flex h-16 items-center px-4 md:px-6">
-          <Link href="/" className="mr-6 flex items-center space-x-2.5 group">
+        <div className="container flex h-16 items-center justify-center px-4 md:px-6">
+          <Link href="/" className="flex items-center space-x-2.5 group">
             <div className="relative">
               <Utensils className="h-6 w-6 text-primary transition-all duration-300 group-hover:drop-shadow-[0_0_8px_oklch(0.72_0.15_180_/_50%)]" />
             </div>
-            <span className="hidden font-bold text-lg sm:inline-block tracking-tight gradient-text">
+            <span className="font-bold text-lg tracking-tight gradient-text">
               Open Food Facts
             </span>
           </Link>
