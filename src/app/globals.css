@@ -85,17 +85,19 @@
   --sidebar-ring: oklch(0.55 0.18 180);
 
   /* Glassmorphism tokens — light */
-  --glass-bg: oklch(1 0 0 / 55%);
-  --glass-bg-hover: oklch(1 0 0 / 70%);
-  --glass-border: oklch(1 0 0 / 60%);
-  --glass-border-hover: oklch(1 0 0 / 80%);
+  --glass-bg: oklch(1 0 0 / 18%);
+  --glass-bg-hover: oklch(1 0 0 / 25%);
+  --glass-nav-bg: oklch(0.97 0.005 220 / 65%);
+  --glass-border: oklch(1 0 0 / 30%);
+  --glass-border-hover: oklch(1 0 0 / 50%);
   --glass-blur: 24px;
-  --glass-shadow: 0 8px 32px oklch(0.55 0.18 180 / 8%), 0 2px 8px oklch(0 0 0 / 5%);
-  --glass-shadow-hover: 0 12px 40px oklch(0.55 0.18 180 / 15%), 0 4px 12px oklch(0 0 0 / 8%);
+  --glass-shadow: 0 8px 32px oklch(0.55 0.18 180 / 12%), 0 2px 8px oklch(0 0 0 / 4%);
+  --glass-shadow-hover: 0 12px 40px oklch(0.55 0.18 180 / 22%), 0 4px 12px oklch(0 0 0 / 8%);
   --glow-teal: 0 0 25px oklch(0.55 0.18 180 / 20%);
   --glow-emerald: 0 0 25px oklch(0.55 0.18 155 / 20%);
   --glow-purple: 0 0 25px oklch(0.55 0.15 290 / 20%);
   --gradient-accent: linear-gradient(135deg, oklch(0.55 0.18 180), oklch(0.55 0.18 155), oklch(0.55 0.15 290));
+  --sidebar-width: 260px;
 }
 
 /* ─── DARK MODE (primary) ─── */
@@ -133,13 +135,14 @@
   --sidebar-ring: oklch(0.72 0.15 180);
 
   /* Glassmorphism tokens — dark */
-  --glass-bg: oklch(1 0 0 / 4%);
-  --glass-bg-hover: oklch(1 0 0 / 7%);
+  --glass-bg: oklch(0.12 0.02 270 / 20%);
+  --glass-bg-hover: oklch(0.12 0.02 270 / 30%);
+  --glass-nav-bg: oklch(0.10 0.02 270 / 65%);
   --glass-border: oklch(1 0 0 / 8%);
   --glass-border-hover: oklch(1 0 0 / 15%);
-  --glass-blur: 28px;
-  --glass-shadow: 0 8px 32px oklch(0 0 0 / 50%), inset 0 1px 0 oklch(1 0 0 / 5%);
-  --glass-shadow-hover: 0 16px 48px oklch(0 0 0 / 60%), inset 0 1px 0 oklch(1 0 0 / 8%);
+  --glass-blur: 24px;
+  --glass-shadow: 0 8px 32px oklch(0 0 0 / 40%), inset 0 1px 0 oklch(1 0 0 / 4%);
+  --glass-shadow-hover: 0 16px 48px oklch(0 0 0 / 50%), inset 0 1px 0 oklch(1 0 0 / 6%);
   --glow-teal: 0 0 35px oklch(0.72 0.15 180 / 30%);
   --glow-emerald: 0 0 35px oklch(0.65 0.18 155 / 30%);
   --glow-purple: 0 0 35px oklch(0.55 0.15 290 / 30%);
@@ -162,11 +165,37 @@
 /* ─── GLASSMORPHISM UTILITIES ─── */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur)) saturate(2.2) brightness(1.02);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(2.2) brightness(1.02);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: backdrop-filter;
+}
+
+.glass-nav {
+  background: var(--glass-nav-bg) !important;
+  backdrop-filter: blur(48px) saturate(2) !important;
+  -webkit-backdrop-filter: blur(48px) saturate(2) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: backdrop-filter;
+}
+
+.glass-highlight {
+  position: relative;
+}
+
+.glass-highlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(to bottom, oklch(1 0 0 / 15%), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .glass:hover {
@@ -260,6 +289,124 @@
 }
 .glow-purple {
   box-shadow: var(--glow-purple);
+}
+
+/* ─── THEME TOGGLE (Celestial Orbit) ─── */
+.theme-toggle-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 56px;
+  height: 28px;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+}
+
+.theme-toggle-pill:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+.theme-toggle-pill:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.theme-toggle-indicator {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  transition: transform 0.35s cubic-bezier(0.68, -0.15, 0.27, 1.15),
+              background 0.35s ease,
+              box-shadow 0.35s ease;
+}
+
+/* Light mode: indicator on left (sun), warm glow */
+.theme-toggle-indicator {
+  transform: translateX(0);
+  background: oklch(0.90 0.08 85 / 25%);
+  box-shadow: 0 0 12px oklch(0.85 0.12 85 / 30%);
+}
+
+/* Dark mode: indicator on right (moon), teal glow */
+.dark .theme-toggle-indicator {
+  transform: translateX(26px);
+  background: oklch(0.72 0.15 180 / 15%);
+  box-shadow: var(--glow-teal);
+}
+
+.theme-toggle-icon {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease,
+              transform 0.35s cubic-bezier(0.68, -0.15, 0.27, 1.15),
+              color 0.3s ease;
+}
+
+.theme-toggle-slot {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Sun icon: left slot */
+.theme-toggle-icon--sun {
+  color: oklch(0.85 0.18 85);
+}
+
+/* Moon icon: right slot */
+.theme-toggle-icon--moon {
+  color: oklch(0.75 0.12 260);
+}
+
+/* Light mode: sun active, moon dim */
+.theme-toggle-icon--sun {
+  opacity: 1;
+  transform: scale(1.1) rotate(0deg);
+}
+
+.theme-toggle-icon--moon {
+  opacity: 0.35;
+  transform: scale(0.85);
+}
+
+/* Dark mode: moon active, sun dim */
+.dark .theme-toggle-icon--sun {
+  opacity: 0.35;
+  transform: scale(0.85);
+}
+
+.dark .theme-toggle-icon--moon {
+  opacity: 1;
+  transform: scale(1.1) rotate(0deg);
+}
+
+/* Skeleton placeholder for SSR */
+.theme-toggle-skeleton {
+  width: 56px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  opacity: 0.5;
 }
 
 /* ─── GRADIENT BUTTON ─── */
@@ -427,6 +574,162 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: oklch(1 0 0 / 20%);
+}
+
+/* ─── BOTTOM NAVIGATION ─── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: var(--glass-nav-bg) !important;
+  backdrop-filter: blur(48px) saturate(2) !important;
+  -webkit-backdrop-filter: blur(48px) saturate(2) !important;
+  border-top: 1px solid var(--glass-border);
+  box-shadow: 0 -8px 32px oklch(0 0 0 / 15%);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  will-change: backdrop-filter;
+}
+
+.bottom-nav-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 6px 8px 8px;
+  position: relative;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  color: var(--muted-foreground);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-width: 56px;
+}
+
+.bottom-nav-item:hover {
+  color: var(--foreground);
+  background: var(--glass-bg-hover);
+}
+
+.bottom-nav-item-active {
+  color: var(--primary);
+}
+
+.bottom-nav-indicator {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--gradient-accent);
+  animation: fadeIn 0.3s ease both;
+}
+
+.bottom-nav-scan-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: -20px;
+}
+
+.bottom-nav-scan-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, oklch(0.62 0.18 180), oklch(0.58 0.19 155));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px oklch(0.62 0.18 180 / 40%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: pulseGlow 3s ease-in-out infinite;
+  border: 3px solid var(--background);
+}
+
+.bottom-nav-scan-btn:hover .bottom-nav-scan-circle {
+  transform: scale(1.08);
+  box-shadow: 0 6px 30px oklch(0.62 0.18 180 / 60%);
+}
+
+.bottom-nav-scan-btn:active .bottom-nav-scan-circle {
+  transform: scale(0.95);
+}
+
+/* ─── SCAN HERO BUTTON ─── */
+.scan-hero-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px 24px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, oklch(0.62 0.18 180), oklch(0.55 0.19 155), oklch(0.50 0.15 290));
+  background-size: 200% 200%;
+  animation: gradientShift 5s ease-in-out infinite;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 32px oklch(0.62 0.18 180 / 35%);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-hero-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 0%) 0%,
+    oklch(1 0 0 / 8%) 50%,
+    oklch(1 0 0 / 0%) 100%
+  );
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
+  border-radius: inherit;
+}
+
+.scan-hero-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px oklch(0.62 0.18 180 / 50%);
+}
+
+.scan-hero-btn:active {
+  transform: translateY(0);
+}
+
+/* ─── COLLAPSIBLE SECTION ─── */
+.collapsible-section {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease;
+}
+
+.collapsible-section-open {
+  max-height: 200px;
+  opacity: 1;
 }
 
 /* ─── REDUCED MOTION ─── */

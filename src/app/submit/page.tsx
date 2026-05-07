@@ -9,12 +9,21 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { submitFoodAction } from "../actions/foodActions"
 import { BarcodeScanner } from "@/components/barcode-scanner"
+import { getOffCredentials } from "@/lib/auth-store"
 
 export default function SubmitFood() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [barcode, setBarcode] = useState("")
+  const [hasCredentials, setHasCredentials] = useState(true)
+
+  useState(() => {
+    const creds = getOffCredentials()
+    if (!creds.username || !creds.password) {
+      setHasCredentials(false)
+    }
+  })
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -22,6 +31,16 @@ export default function SubmitFood() {
     setError("")
 
     const formData = new FormData(e.currentTarget)
+    const creds = getOffCredentials()
+    
+    if (!creds.username || !creds.password) {
+      setError("Please configure your OFF credentials in Settings first.")
+      setLoading(false)
+      return
+    }
+
+    formData.append("username", creds.username)
+    formData.append("password", creds.password)
 
     try {
       const result = await submitFoodAction(formData)
@@ -59,42 +78,17 @@ export default function SubmitFood() {
             </div>
           )}
 
-          {/* Authentication Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-[var(--glass-border)]">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-              <h3 className="text-xs font-semibold text-primary/80 uppercase tracking-widest">
-                Authentication
-              </h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="username" className="text-sm font-medium text-foreground/80">
-                  Open Food Facts Username
-                </Label>
-                <Input
-                  id="username"
-                  name="username"
-                  required
-                  placeholder="Your username"
-                  className="glass-input h-11"
-                />
+          {!hasCredentials && (
+            <div className="p-4 glass-card-static bg-amber-500/5 border-amber-500/20 flex items-start gap-3 text-sm mb-4">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0 mt-0.5">
+                <Info className="h-4 w-4 text-amber-400" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-foreground/80">
-                  Password
-                </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  className="glass-input h-11"
-                />
+              <div className="pt-1">
+                <p className="text-amber-300 font-medium">Credentials missing</p>
+                <p className="text-amber-300/70 text-xs">Please set your Open Food Facts username and password in <button type="button" onClick={() => router.push('/settings')} className="underline">Settings</button> to submit products.</p>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Product Details Section */}
           <div className="space-y-4">

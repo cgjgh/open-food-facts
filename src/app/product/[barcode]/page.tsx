@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { calculateYukaScore, getScoringReasons, getValidNutriscore } from "@/lib/scoring"
 import { CheckCircle2, AlertCircle, XCircle, Leaf, Shield } from "lucide-react"
+import { HistoryTracker } from "@/components/history-tracker"
 
 interface PageProps {
   params: Promise<{ barcode: string }>
@@ -251,6 +252,14 @@ export default async function ProductPage({ params }: PageProps) {
           )}
         </div>
       </div>
+
+      {/* History Tracker — records this product view */}
+      <HistoryTracker
+        barcode={barcode}
+        productName={product.product_name || "Unknown Product"}
+        brand={product.brands}
+        imageUrl={product.image_front_url}
+      />
     </div>
   )
 }

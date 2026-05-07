@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/header";
 import { AnimatedBackground } from "@/components/animated-background";
+import { BottomNav } from "@/components/bottom-nav";
+import { Sidebar } from "@/components/sidebar";
 
 const outfit = Outfit({
   variable: "--font-sans",
@@ -33,10 +35,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AnimatedBackground />
-          <div className="relative flex min-h-screen flex-col" style={{ zIndex: 1 }}>
-            <Header />
-            <main className="flex-1">{children}</main>
+          <div className="relative flex min-h-screen" style={{ zIndex: 1 }}>
+            <Sidebar />
+            <div className="flex-1 flex flex-col transition-all duration-300 md:pl-[var(--sidebar-width,260px)]">
+              <Header />
+              <main className="flex-1 pb-20 md:pb-0">{children}</main>
+            </div>
           </div>
+          <BottomNav />
         </ThemeProvider>
       </body>
     </html>
