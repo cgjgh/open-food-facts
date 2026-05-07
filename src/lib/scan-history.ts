@@ -13,6 +13,11 @@ function isBrowser(): boolean {
   return typeof window !== "undefined"
 }
 
+/**
+ * Retrieves the scan history from LocalStorage.
+ * 
+ * @returns An array of ScanHistoryItem objects.
+ */
 export function getScanHistory(): ScanHistoryItem[] {
   if (!isBrowser()) return []
   try {
@@ -23,6 +28,12 @@ export function getScanHistory(): ScanHistoryItem[] {
   }
 }
 
+/**
+ * Adds a new product scan to the history, maintaining a maximum item limit.
+ * Deduplicates entries by barcode, moving the most recent scan to the top.
+ * 
+ * @param item - The product information to add to history.
+ */
 export function addScanToHistory(item: Omit<ScanHistoryItem, "timestamp">): void {
   if (!isBrowser()) return
   try {

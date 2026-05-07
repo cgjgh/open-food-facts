@@ -26,6 +26,12 @@ export interface OffProduct {
   nutriments?: Record<string, any>;
 }
 
+/**
+ * Extracts and normalizes the Nutri-Score grade from various product fields.
+ * 
+ * @param product - The product data from Open Food Facts API.
+ * @returns The normalized grade (a-e) or undefined if not found or invalid.
+ */
 export function getValidNutriscore(product: OffProduct): string | undefined {
   const grade = product.nutriscore_grade || product.nutrition_grades || product.nutrition_grade_fr;
   if (!grade) return undefined;
@@ -36,6 +42,17 @@ export function getValidNutriscore(product: OffProduct): string | undefined {
   return lower;
 }
 
+/**
+ * Calculates a custom 0-100 health score inspired by Yuka's methodology.
+ * 
+ * The score is weighted as follows:
+ * - 60%: Nutri-Score
+ * - 30%: Additive penalties
+ * - 10%: NOVA group penalties & Eco-Score bonuses
+ * 
+ * @param product - The product data from Open Food Facts API.
+ * @returns A ScoreResult object containing the numeric score, category, color, and label.
+ */
 export function calculateYukaScore(product: OffProduct): ScoreResult {
   let baseScore = 50;
 
@@ -103,6 +120,13 @@ export function calculateYukaScore(product: OffProduct): ScoreResult {
   }
 }
 
+/**
+ * Analyzes a product and returns a list of positive and negative attributes
+ * explaining the calculated score.
+ * 
+ * @param product - The product data from Open Food Facts API.
+ * @returns An object containing arrays of positive and negative AttributeReason.
+ */
 export function getScoringReasons(product: OffProduct): { positives: AttributeReason[], negatives: AttributeReason[] } {
   const positives: AttributeReason[] = [];
   const negatives: AttributeReason[] = [];
