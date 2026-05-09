@@ -55,7 +55,7 @@ export function EvaluationDetailDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="glass border-[var(--glass-border)] sm:max-w-[425px] overflow-hidden">
+      <DialogContent className="glass-deep border-[var(--glass-border)] sm:max-w-[425px] overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-blue-500" />
         
         <DialogHeader className="pt-4">
