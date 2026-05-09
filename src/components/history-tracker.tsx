@@ -8,12 +8,13 @@ interface HistoryTrackerProps {
   productName: string
   brand?: string
   imageUrl?: string
+  type?: "food" | "beauty"
 }
 
-export function HistoryTracker({ barcode, productName, brand, imageUrl }: HistoryTrackerProps) {
+export function HistoryTracker({ barcode, productName, brand, imageUrl, type }: HistoryTrackerProps) {
   useEffect(() => {
-    addScanToHistory({ barcode, productName, brand, imageUrl })
-  }, [barcode, productName, brand, imageUrl])
+    addScanToHistory({ barcode, productName, brand, imageUrl, type })
+  }, [barcode, productName, brand, imageUrl, type])
 
   return null
 }

@@ -7,6 +7,7 @@ export interface ScanHistoryItem {
   brand?: string
   imageUrl?: string
   timestamp: number
+  type?: "food" | "beauty"
 }
 
 function isBrowser(): boolean {

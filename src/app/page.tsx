@@ -33,10 +33,10 @@ export default function Home() {
             <Sparkles className="w-5 h-5 text-primary animate-float" style={{ animationDelay: "1s" }} />
           </div>
           <h1 className="text-5xl font-extrabold tracking-tight lg:text-6xl gradient-text leading-tight">
-            Know What You Eat
+            Know What You Use
           </h1>
           <p className="text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-            Search any food product to discover its nutritional score,
+            Scan food or beauty products to discover their scores,
             ingredients, additives, and environmental impact.
           </p>
         </div>
@@ -98,7 +98,7 @@ export default function Home() {
 
         {/* Subtle footer hint */}
         <p className="text-xs text-muted-foreground/50 animate-fade-in" style={{ animationDelay: "0.8s" }}>
-          Data sourced from the Open Food Facts collaborative database
+          Data sourced from Open Food Facts & Open Beauty Facts collaborative databases
         </p>
       </div>
     </div>

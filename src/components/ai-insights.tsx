@@ -9,6 +9,7 @@ interface AIInsightsProps {
   brands?: string
   ingredients?: string
   nutrition?: Record<string, unknown> | string
+  type?: "food" | "beauty"
 }
 
 interface AIInsightData {
@@ -18,7 +19,7 @@ interface AIInsightData {
   healthy_swaps: Array<{ name: string; reason: string }>;
 }
 
-export function AIInsights({ productName, brands, ingredients, nutrition }: AIInsightsProps) {
+export function AIInsights({ productName, brands, ingredients, nutrition, type }: AIInsightsProps) {
   const [insights, setInsights] = useState<AIInsightData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -30,7 +31,8 @@ export function AIInsights({ productName, brands, ingredients, nutrition }: AIIn
           name: productName,
           brands,
           ingredients,
-          nutrition
+          nutrition,
+          type
         })
         
         if (data.error) {
@@ -46,7 +48,7 @@ export function AIInsights({ productName, brands, ingredients, nutrition }: AIIn
     }
 
     fetchInsights()
-  }, [productName, brands, ingredients, nutrition])
+  }, [productName, brands, ingredients, nutrition, type])
 
   if (loading) {
     return (
@@ -97,7 +99,7 @@ export function AIInsights({ productName, brands, ingredients, nutrition }: AIIn
           </div>
           <h4 className="text-sm font-bold text-emerald-400 uppercase tracking-widest mb-3 flex items-center gap-2">
             <Info className="w-4 h-4" />
-            Dietitian&apos;s Perspective
+            {type === "beauty" ? "Cosmetic Scientist's Perspective" : "Dietitian's Perspective"}
           </h4>
           <p className="text-foreground leading-relaxed relative z-10">
             {insights.dietitians_view}

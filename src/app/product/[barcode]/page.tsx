@@ -1,8 +1,8 @@
-import { offClient } from "@/lib/off"
+import { fetchProduct } from "@/lib/off"
 import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
-import { calculateYukaScore, getScoringReasons, getValidNutriscore } from "@/lib/scoring"
-import { Leaf, Shield } from "lucide-react"
+import { calculateYukaScore, getScoringReasons, getValidNutriscore, type OffProduct } from "@/lib/scoring"
+import { Leaf, Shield, Sparkles } from "lucide-react"
 import { HistoryTracker } from "@/components/history-tracker"
 import { AIInsights } from "@/components/ai-insights"
 import { EvaluationList } from "@/components/evaluation-list"
@@ -14,7 +14,7 @@ interface PageProps {
 export default async function ProductPage({ params }: PageProps) {
   const { barcode } = await params
 
-  const { data, error } = await offClient.getProductV3(barcode)
+  const { data, error, type: productType } = await fetchProduct(barcode)
 
   if (error || !data || (data.status !== "success" && data.status !== "success_with_warnings")) {
     notFound()
@@ -24,10 +24,12 @@ export default async function ProductPage({ params }: PageProps) {
     notFound()
   }
 
-  const product = data.product
+  const product = { ...data.product, product_type: productType } as OffProduct
   const scoreData = calculateYukaScore(product)
   const reasons = getScoringReasons(product)
   const validNutriScore = getValidNutriscore(product)
+
+  const isBeauty = productType === "beauty"
 
   // Determine Nutri-Score Color
   const getNutriscoreColor = (grade: string) => {
@@ -139,27 +141,45 @@ export default async function ProductPage({ params }: PageProps) {
                 {scoreData.label}
               </h2>
               <p className="text-sm text-muted-foreground mt-1 max-w-[200px]">
-                Based on nutritional value, additives, and processing.
+                {isBeauty 
+                  ? "Based on ingredients, additives, and environmental impact."
+                  : "Based on nutritional value, additives, and processing."}
               </p>
             </div>
           </div>
-
+ 
           {/* Nutri-Score Metric */}
-          <div className="flex items-center sm:border-l sm:pl-6 border-[var(--glass-border)]">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-                <Shield className="w-3.5 h-3.5" />
-                Nutri-Score
-              </span>
-              {validNutriScore ? (
-                <div className={`text-white font-black text-2xl uppercase w-13 h-13 flex items-center justify-center rounded-xl transition-all ${getNutriscoreColor(validNutriScore)}`}>
-                  {validNutriScore}
-                </div>
-              ) : (
-                <span className="text-sm text-muted-foreground">N/A</span>
-              )}
+          {!isBeauty && (
+            <div className="flex items-center sm:border-l sm:pl-6 border-[var(--glass-border)]">
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5" />
+                  Nutri-Score
+                </span>
+                {validNutriScore ? (
+                  <div className={`text-white font-black text-2xl uppercase w-13 h-13 flex items-center justify-center rounded-xl transition-all ${getNutriscoreColor(validNutriScore)}`}>
+                    {validNutriScore}
+                  </div>
+                ) : (
+                  <span className="text-sm text-muted-foreground">N/A</span>
+                )}
+              </div>
             </div>
-          </div>
+          )}
+          
+          {isBeauty && (
+            <div className="flex items-center sm:border-l sm:pl-6 border-[var(--glass-border)]">
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Beauty Facts
+                </span>
+                <Badge variant="secondary" className="text-xs glass py-2 px-4 border-[var(--glass-border)]">
+                  Cosmetic
+                </Badge>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -179,6 +199,7 @@ export default async function ProductPage({ params }: PageProps) {
         brands={product.brands}
         ingredients={product.ingredients_text}
         nutrition={product.nutriments}
+        type={productType}
       />
 
       {/* ADDITIONAL DATA */}
@@ -210,6 +231,7 @@ export default async function ProductPage({ params }: PageProps) {
         productName={product.product_name || "Unknown Product"}
         brand={product.brands}
         imageUrl={product.image_front_url}
+        type={productType}
       />
     </div>
   )

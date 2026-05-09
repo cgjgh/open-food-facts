@@ -15,6 +15,11 @@ export interface AttributeReason {
 }
 
 export interface OffProduct {
+  product_name?: string;
+  brands?: string;
+  image_front_url?: string;
+  ingredients_text?: string;
+  quantity?: string;
   nutriscore_grade?: string;
   nutrition_grades?: string;
   nutrition_grade_fr?: string;
@@ -24,6 +29,8 @@ export interface OffProduct {
   nutrient_levels?: Record<string, string>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nutriments?: Record<string, any>;
+  product_type?: "food" | "beauty";
+  ingredients_analysis_tags?: string[];
 }
 
 /**
@@ -200,6 +207,21 @@ export function getScoringReasons(product: OffProduct): { positives: AttributeRe
   const proteins = product.nutriments?.proteins_100g;
   if (proteins && proteins > 8) {
     positives.push({ id: 'protein-high', type: 'positive', title: 'Excellent protein', value: `${proteins}g` });
+  }
+
+  // -- INGREDIENT ANALYSIS (Vegan, Palm Oil, etc.) --
+  if (product.ingredients_analysis_tags) {
+    product.ingredients_analysis_tags.forEach(tag => {
+      if (tag === 'en:palm-oil-free') {
+        positives.push({ id: 'palm-oil-free', type: 'positive', title: 'Palm oil free' });
+      } else if (tag === 'en:vegan') {
+        positives.push({ id: 'vegan', type: 'positive', title: 'Vegan' });
+      } else if (tag === 'en:vegetarian') {
+        positives.push({ id: 'vegetarian', type: 'positive', title: 'Vegetarian' });
+      } else if (tag === 'en:palm-oil') {
+        negatives.push({ id: 'palm-oil', type: 'warning', title: 'Contains palm oil' });
+      }
+    });
   }
 
   return { positives, negatives };

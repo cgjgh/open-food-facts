@@ -8,11 +8,16 @@ export async function getProductAIInsights(productData: {
   brands?: string;
   ingredients?: string;
   nutrition?: Record<string, unknown> | string;
+  type?: "food" | "beauty";
 }) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return { error: "Gemini API key is not configured." };
   }
+
+  const isBeauty = productData.type === "beauty";
+  const persona = isBeauty ? "cosmetic scientist and skin safety expert" : "professional dietitian and food scientist";
+  const productLabel = isBeauty ? "cosmetic/beauty product" : "food product";
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
@@ -25,32 +30,32 @@ export async function getProductAIInsights(productData: {
     });
 
     const prompt = `
-      You are a professional dietitian and food scientist. 
-      Analyze the following food product and provide structured insights in JSON format.
+      You are a ${persona}. 
+      Analyze the following ${productLabel} and provide structured insights in JSON format.
       
       Product Name: ${productData.name}
       Brands: ${productData.brands || "Unknown"}
       Ingredients: ${productData.ingredients || "Not provided"}
-      Nutrition Data: ${JSON.stringify(productData.nutrition || {})}
+      ${isBeauty ? "" : `Nutrition Data: ${JSON.stringify(productData.nutrition || {})}`}
 
       The JSON output should have the following structure:
       {
-        "dietitians_view": "A concise, human-friendly summary (2-3 sentences) of the product's health impact.",
+        "dietitians_view": "A concise, human-friendly summary (2-3 sentences) of the product's ${isBeauty ? 'safety and skin impact' : 'health impact'}.",
         "ingredient_analysis": [
           {
             "name": "Name of a complex or noteworthy ingredient",
-            "explanation": "Simple explanation of what it is and its health impact."
+            "explanation": "Simple explanation of what it is and its ${isBeauty ? 'skin/safety' : 'health'} impact."
           }
         ],
         "additives_to_avoid": [
           {
-            "name": "Additive name or code",
-            "risk": "Why it should be avoided or limited."
+            "name": "Additive/Chemical name or code",
+            "risk": "Why it should be avoided or limited${isBeauty ? ' (e.g., endocrine disruptors, allergens)' : ''}."
           }
         ],
         "healthy_swaps": [
           {
-            "name": "A healthier alternative product or category",
+            "name": "A ${isBeauty ? 'cleaner or more effective' : 'healthier'} alternative product or category",
             "reason": "Why it is a better choice."
           }
         ]

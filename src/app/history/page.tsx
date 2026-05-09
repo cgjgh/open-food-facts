@@ -149,9 +149,14 @@ export default function HistoryPage() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-foreground text-sm truncate">
-                    {item.productName || "Unknown Product"}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-foreground text-sm truncate">
+                      {item.productName || "Unknown Product"}
+                    </p>
+                    {item.type === "beauty" && (
+                      <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-tighter">Beauty</span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     {item.brand && (
                       <span className="text-xs text-muted-foreground truncate">{item.brand}</span>
