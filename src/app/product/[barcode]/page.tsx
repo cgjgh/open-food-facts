@@ -2,8 +2,10 @@ import { offClient } from "@/lib/off"
 import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { calculateYukaScore, getScoringReasons, getValidNutriscore } from "@/lib/scoring"
-import { CheckCircle2, AlertCircle, XCircle, Leaf, Shield } from "lucide-react"
+import { Leaf, Shield } from "lucide-react"
 import { HistoryTracker } from "@/components/history-tracker"
+import { AIInsights } from "@/components/ai-insights"
+import { EvaluationList } from "@/components/evaluation-list"
 
 interface PageProps {
   params: Promise<{ barcode: string }>
@@ -161,77 +163,26 @@ export default async function ProductPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* POSITIVES AND NEGATIVES */}
+      {/* EVALUATION SECTION */}
       <div className="space-y-5 mb-10">
         <h3 className="text-xl font-bold px-1 gradient-text-teal">Evaluation Details</h3>
-
-        {reasons.negatives.length === 0 && reasons.positives.length === 0 && (
-           <p className="text-muted-foreground px-1">Not enough data to provide a detailed evaluation.</p>
-        )}
-
-        {/* Negatives List */}
-        {reasons.negatives.length > 0 && (
-          <div className="glass-card-static overflow-hidden stagger-children">
-            <div className="divide-y divide-[var(--glass-border)]">
-              {reasons.negatives.map((reason, index) => (
-                <div
-                  key={reason.id}
-                  className="p-4 flex items-center gap-4 animate-fade-in-up transition-colors hover:bg-red-500/5"
-                  style={{ animationDelay: `${index * 80}ms` }}
-                >
-                  {reason.type === 'negative' ? (
-                    <div className="w-9 h-9 rounded-lg bg-red-500/15 flex items-center justify-center shrink-0">
-                      <XCircle className="w-5 h-5 text-red-400" />
-                    </div>
-                  ) : (
-                    <div className="w-9 h-9 rounded-lg bg-orange-500/15 flex items-center justify-center shrink-0">
-                      <AlertCircle className="w-5 h-5 text-orange-400" />
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <p className="font-semibold text-foreground">{reason.title}</p>
-                  </div>
-                  {reason.value && (
-                    <span className="text-sm font-bold text-muted-foreground glass px-3 py-1.5 rounded-lg text-xs font-mono">
-                      {reason.value}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Positives List */}
-        {reasons.positives.length > 0 && (
-          <div className="glass-card-static overflow-hidden stagger-children">
-            <div className="divide-y divide-[var(--glass-border)]">
-              {reasons.positives.map((reason, index) => (
-                <div
-                  key={reason.id}
-                  className="p-4 flex items-center gap-4 animate-fade-in-up transition-colors hover:bg-emerald-500/5"
-                  style={{ animationDelay: `${(reasons.negatives.length + index) * 80}ms` }}
-                >
-                  <div className="w-9 h-9 rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-foreground">{reason.title}</p>
-                  </div>
-                  {reason.value && (
-                    <span className="text-sm font-bold text-muted-foreground glass px-3 py-1.5 rounded-lg text-xs font-mono">
-                      {reason.value}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <EvaluationList 
+          negatives={reasons.negatives} 
+          positives={reasons.positives} 
+          productName={product.product_name || "this product"}
+        />
       </div>
 
+      {/* AI INSIGHTS */}
+      <AIInsights 
+        productName={product.product_name || "Unknown Product"}
+        brands={product.brands}
+        ingredients={product.ingredients_text}
+        nutrition={product.nutriments}
+      />
+
       {/* ADDITIONAL DATA */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.4s' }}>
         <div className="glass-card p-6">
           <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center">

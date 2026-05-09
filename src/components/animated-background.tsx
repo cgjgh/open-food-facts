@@ -2,15 +2,6 @@
 
 import { useEffect, useRef } from "react"
 
-interface Particle {
-  x: number
-  y: number
-  size: number
-  speedY: number
-  speedX: number
-  opacity: number
-  maxOpacity: number
-}
 
 interface Blob {
   x: number
@@ -74,17 +65,6 @@ export function AnimatedBackground() {
       },
     ]
 
-    // ── PARTICLES ──
-    const particleCount = 60
-    const particles: Particle[] = Array.from({ length: particleCount }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 2 + 0.5,
-      speedY: -(Math.random() * 0.4 + 0.1),
-      speedX: (Math.random() - 0.5) * 0.3,
-      opacity: 0,
-      maxOpacity: Math.random() * 0.35 + 0.1,
-    }))
 
     let lastTime = 0
     const targetFPS = 30
@@ -118,33 +98,6 @@ export function AnimatedBackground() {
         ctx.fill()
       }
 
-      // Draw particles
-      for (const p of particles) {
-        p.y += p.speedY
-        p.x += p.speedX
-
-        // Fade in as they appear, fade out near top
-        if (p.y > height * 0.8) {
-          p.opacity = Math.min(p.opacity + 0.005, p.maxOpacity)
-        } else if (p.y < height * 0.15) {
-          p.opacity = Math.max(p.opacity - 0.008, 0)
-        } else {
-          p.opacity = Math.min(p.opacity + 0.003, p.maxOpacity)
-        }
-
-        // Reset particle when it goes off screen
-        if (p.y < -10 || p.opacity <= 0) {
-          p.y = height + 10
-          p.x = Math.random() * width
-          p.opacity = 0
-          p.maxOpacity = Math.random() * 0.35 + 0.1
-        }
-
-        ctx.beginPath()
-        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-        ctx.fill()
-      }
     }
 
     animationId = requestAnimationFrame(animate)

@@ -59,6 +59,8 @@ For more detailed information, check out:
 - [🏗️ Architecture](ARCHITECTURE.md) - Project structure and data flow.
 - [👩‍💻 Development](DEVELOPMENT.md) - Guidelines for contributors.
 - [🔗 API Reference](API.md) - Internal actions and OFF API usage.
+- [🔑 Gemini Setup](GEMINI_SETUP.md) - How to configure your API keys.
+- [🤖 AI Documentation](AI_DOCUMENTATION.md) - AI architecture and feature overview.
 - [🚀 Features Deep Dive](FEATURES.md) - Technical details of core features.
 
 ## 🤝 Contributing

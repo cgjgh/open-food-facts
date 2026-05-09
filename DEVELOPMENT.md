@@ -40,6 +40,15 @@ We use `next-themes` for theme management.
 - Always test your UI in both **Light** and **Dark** modes.
 - Use CSS variables from `globals.css` instead of hardcoded hex values where possible.
 
+## 🤖 AI Development
+
+This project uses Google Gemini for AI-powered product analysis. For a full breakdown of the system, see [AI_DOCUMENTATION.md](AI_DOCUMENTATION.md).
+
+- **Integration**: All AI logic should live in `src/app/actions/aiActions.ts`.
+- **Model Configuration**: Use the central `src/lib/ai-config.ts` to switch models or adjust parameters. Do not hardcode these in actions.
+- **Configuration**: See [GEMINI_SETUP.md](GEMINI_SETUP.md) for instructions on setting up your API keys.
+- **UX**: AI features should always have a loading state and graceful error handling (see `src/components/ai-insights.tsx` for implementation patterns).
+
 ## 🚀 Deployment
 
 The project is optimized for **Vercel**. 
